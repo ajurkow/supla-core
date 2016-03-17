@@ -126,7 +126,7 @@ supla_esp_key_intr_handler(uint32 gpio_status) {
 	//tutaj przejme z przerwania od klawiszy
 	//sygnal z Sieci o przejsiu przez ZERO
 	//i wywolam odpowiednia funkcje sterujaca triakiem
-	if ( gpio_status & BIT(ZEROCROSS_PORT)
+	if ( gpio_status & BIT(ZEROCROSS_PORT))
 	{
 		supla_triac_dimmer_zerocross();
 	}
@@ -142,7 +142,7 @@ supla_esp_gpio_init(void) {
    
 	gpio_pin_intr_state_set(GPIO_ID_PIN(LED_BLUE_PORT), GPIO_PIN_INTR_DISABLE);
 
-#ifndef (DIMMERMODULE)	
+#ifndef DIMMERMODULE	
 	gpio_pin_intr_state_set(GPIO_ID_PIN(LED_GREEN_PORT), GPIO_PIN_INTR_DISABLE);
 	gpio_pin_intr_state_set(GPIO_ID_PIN(RELAY1_PORT), GPIO_PIN_INTR_DISABLE);
 #endif
@@ -193,7 +193,9 @@ void ICACHE_FLASH_ATTR supla_esp_gpio_set_rgb(char r, char g, char b) {
 	supla_esp_gpio_hi(LED_RED_PORT, r);
     #endif
 
+#ifndef DIMMERMODULE
 	supla_esp_gpio_hi(LED_GREEN_PORT, g);
+#endif
 	supla_esp_gpio_hi(LED_BLUE_PORT, b);
 }
 

@@ -259,7 +259,11 @@ supla_esp_relay2_timer_func(void *timer_arg) {
 void ICACHE_FLASH_ATTR
 supla_esp_channel_set_value(TSD_SuplaChannelNewValue *new_value) {
 
+#ifdef DIMMERMODULE
+// cos tam cos tam
+// tutaj Przemku zostawiam Tobie
 
+#else
 	char v = new_value->value[0] == 0 ? 0 : 1;
 
     #ifdef WIFISOCKET
@@ -290,7 +294,7 @@ supla_esp_channel_set_value(TSD_SuplaChannelNewValue *new_value) {
 
 	}
 	#endif
-
+#endif
 }
 
 void ICACHE_FLASH_ATTR
@@ -623,6 +627,7 @@ supla_esp_devconn_timer1_cb(void *timer_arg) {
 
 void ICACHE_FLASH_ATTR supla_esp_devconn_on_temp_changed(double temp) {
 
+#ifndef DIMMERMODULE
 	if ( srpc != NULL
 		 && registered == 1 ) {
 
@@ -632,6 +637,6 @@ void ICACHE_FLASH_ATTR supla_esp_devconn_on_temp_changed(double temp) {
 
 		srpc_ds_async_channel_value_changed(srpc, TEMPERATURE_CHANNEL, value);
 	}
-
+#endif
 }
 
