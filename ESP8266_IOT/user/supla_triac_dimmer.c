@@ -14,15 +14,21 @@
 #include <ets_sys.h>
 
 #include "supla-dev/log.h"
+#include "driver/hw_timer.h"
 
-
+static unsigned char initialized = 0;
 
 void ICACHE_FLASH_ATTR supla_triac_dimmer_init(void)
 {
 
+
+	initialized = 1;
 }
 
 
 void ICACHE_FLASH_ATTR supla_triac_dimmer_zerocross(void)
 {
+if (!initialized) return;
+
+	hw_timer_arm(1000);	//wylaczenie za 1ms - dlugosc impulsu bramkowego triaka
 }
