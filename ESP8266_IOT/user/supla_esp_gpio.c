@@ -29,7 +29,7 @@ static char input1_last_state = -1;
 static char input2_last_state = -1;
 #endif
 
-static struct single_key_param *single_key[1];
+static struct single_key_param *single_key[2];
 static struct keys_param keys;
 static char cfg_exit_counter = 1; // 1 for start cfg from user_init
 
@@ -119,35 +119,59 @@ supla_esp_key_intr_handler(uint32 gpio_status) {
 }
 #endif
 
+#ifdef DIMMERMODULE
+LOCAL void
+supla_esp_key_intr_handler(uint32 gpio_status) {
+
+	//tutaj przejme z przerwania od klawiszy
+	//sygnal z Sieci o przejsiu przez ZERO
+	//i wywolam odpowiednia funkcje sterujaca triakiem
+	if ( gpio_status & BIT(ZEROCROSS_PORT)
+	{
+		supla_triac_dimmer_zerocross();
+	}
+}
+#endif
+
 void ICACHE_FLASH_ATTR
 supla_esp_gpio_init(void) {
 
 	ETS_GPIO_INTR_DISABLE();
 
 	GPIO_PORT_INIT;
+   
+	gpio_pin_intr_state_set(GPIO_ID_PIN(LED_BLUE_PORT), GPIO_PIN_INTR_DISABLE);
 
-    gpio_pin_intr_state_set(GPIO_ID_PIN(LED_GREEN_PORT), GPIO_PIN_INTR_DISABLE);
-    gpio_pin_intr_state_set(GPIO_ID_PIN(LED_BLUE_PORT), GPIO_PIN_INTR_DISABLE);
-    gpio_pin_intr_state_set(GPIO_ID_PIN(RELAY1_PORT), GPIO_PIN_INTR_DISABLE);
+#ifndef (DIMMERMODULE)	
+	gpio_pin_intr_state_set(GPIO_ID_PIN(LED_GREEN_PORT), GPIO_PIN_INTR_DISABLE);
+	gpio_pin_intr_state_set(GPIO_ID_PIN(RELAY1_PORT), GPIO_PIN_INTR_DISABLE);
+#endif
 
-    #ifdef WIFISOCKET
-    gpio_pin_intr_state_set(GPIO_ID_PIN(LED_RED_PORT), GPIO_PIN_INTR_DISABLE);
-    #elif defined(GATEMODULE)
-    gpio_pin_intr_state_set(GPIO_ID_PIN(RELAY2_PORT), GPIO_PIN_INTR_DISABLE);
-    #endif
+#ifdef WIFISOCKET
+	gpio_pin_intr_state_set(GPIO_ID_PIN(LED_RED_PORT), GPIO_PIN_INTR_DISABLE);
+#elif defined(GATEMODULE)
+	gpio_pin_intr_state_set(GPIO_ID_PIN(RELAY2_PORT), GPIO_PIN_INTR_DISABLE);
+#elif defined(DIMMERMODULE)
+	gpio_pin_intr_state_set(GPIO_ID_PIN(TRIAC_PORT), GPIO_PIN_INTR_DISABLE);
+#endif
 
 	ETS_GPIO_INTR_ENABLE();
 
 	single_key[0] = key_init_single(BTN_PORT, supla_esg_gpio_cfg_pressed, supla_esg_gpio_manual_pressed);
+	single_key[1] = key_init_single(ZEROCROSS_PORT, NULL,NULL);//supla_esg_gpio_cfg_pressed, supla_esg_gpio_manual_pressed);
 
-	keys.key_num = 1;
+	keys.key_num = 2;
 	keys.single_key = single_key;
 
-    #ifdef GATEMODULE
+#ifdef GATEMODULE
 	keys.handler = supla_esp_key_intr_handler;
 	supla_esp_gpio_hi(RELAY1_PORT, 0);
 	supla_esp_gpio_hi(RELAY2_PORT, 0);
-    #endif
+#endif
+
+#ifdef DIMMERMODULE
+	supla_esp_gpio_hi(TRIAC_PORT, 1);
+#endif
 
 	key_init(&keys);
 

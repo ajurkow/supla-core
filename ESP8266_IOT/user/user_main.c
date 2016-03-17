@@ -14,12 +14,14 @@
 #include <ip_addr.h>
 #include <osapi.h>
 #include <mem.h>
+#include <ets_sys.h>
 
 #include "supla_esp.h"
 #include "supla_esp_cfg.h"
 #include "supla_esp_cfgmode.h"
 #include "supla_esp_gpio.h"
 #include "supla-dev/log.h"
+
 
 void user_init(void)
 {
@@ -31,7 +33,7 @@ void user_init(void)
      supla_esp_devconn_init();
      supla_esp_gpio_init();
      supla_ds18b20_init();
-
+     supla_triac_dimmer_init();
 
      if ( supla_esp_cfg.LocationID == 0
     		 || supla_esp_cfg.LocationPwd[0] == 0

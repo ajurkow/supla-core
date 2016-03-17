@@ -12,7 +12,8 @@
 
 #include "supla-dev/proto.h"
 
-#define WIFISOCKET
+#define DIMMERMODULE
+//#define WIFISOCKET
 //#define GATEMODULE
 //#define WROOM
 
@@ -22,6 +23,8 @@
 #elif defined(GATEMODULE)
 	#define DEVICE_NAME "SUPLA-GATE-MODULE"
 	#define TEMPERATURE_CHANNEL 4
+#elif defined(DIMMERMODULE)
+	#define DEVICE_NAME "SUPLA-DIMMER-MODULE"
 #endif
 
 
@@ -58,7 +61,16 @@
 
 #elif defined(GATEMODULE)
 
-#ifdef WROOM
+#define LED_GREEN_PORT  12
+#define LED_BLUE_PORT   14
+
+#define BTN_PORT         5
+#define RELAY1_PORT      4
+#define RELAY2_PORT      13
+#define INPUT_PORT1      12
+#define INPUT_PORT2      14
+
+#elif defined(WROOM)
 
 #define LED_GREEN_PORT  5
 #define LED_BLUE_PORT   12
@@ -69,18 +81,12 @@
 #define INPUT_PORT1      5
 #define INPUT_PORT2      12
 
-#else
+#elif defined(DIMMERMODULE)
 
-#define LED_GREEN_PORT  12
-#define LED_BLUE_PORT   14
-
+#define LED_BLUE_PORT   2
 #define BTN_PORT         5
-#define RELAY1_PORT      4
-#define RELAY2_PORT      13
-#define INPUT_PORT1      12
-#define INPUT_PORT2      14
-#endif
-
+#define ZEROCROSS_PORT	 4
+#define TRIAC_PORT	 16
 #endif
 
 
