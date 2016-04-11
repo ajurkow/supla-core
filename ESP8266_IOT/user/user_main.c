@@ -31,10 +31,16 @@ void user_init(void)
 
      supla_esp_cfg_init();
      supla_esp_devconn_init();
+#ifndef DIMMERMODULE
      supla_esp_gpio_init();
      supla_ds18b20_init();
-     supla_triac_dimmer_init();
+#endif
 
+#ifdef DIMMERMODULE
+     supla_triac_dimmer_gpio_init();
+     supla_triac_dimmer_init();
+#endif
+     
      if ( supla_esp_cfg.LocationID == 0
     		 || supla_esp_cfg.LocationPwd[0] == 0
     		 || supla_esp_cfg.Server[0] == 0
@@ -45,8 +51,9 @@ void user_init(void)
     	 return;
      }
 
-
+#ifndef DIMMERMODULE
 	supla_ds18b20_start();
+#endif
 	supla_esp_devconn_start();
 
 
