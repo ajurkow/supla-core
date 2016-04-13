@@ -82,9 +82,9 @@
 #define INPUT_PORT2      12
 
 #elif defined(DIMMERMODULE)
-
-#define USERSWITCH_PORT  15
-#define BTN_PORT         2
+#define LED_BLUE_PORT    2
+#define USERSWITCH_PORT  13
+#define BTN_PORT         15
 #define ZEROCROSS_PORT	 5
 #define TRIAC_PORT	 	 4
 #endif

@@ -32,12 +32,12 @@ void user_init(void)
      supla_esp_cfg_init();
      supla_esp_devconn_init();
 #ifndef DIMMERMODULE
-     supla_esp_gpio_init();
+	 supla_esp_gpio_init();
      supla_ds18b20_init();
 #endif
 
 #ifdef DIMMERMODULE
-     supla_triac_dimmer_gpio_init();
+	 supla_triac_dimmer_gpio_init();
      supla_triac_dimmer_init();
 #endif
      
